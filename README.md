@@ -26,6 +26,8 @@ XDI's APIs provide Physical Climate Risk analysis and offer two main interaction
 Client -> API: Send location details  
 API -> Client: Immediate response with severity data
 
+[//]: # "Consider generalising severity data to physical climate risk data"
+
 ## Batch (Multiple Locations) Three-step process:
 
 1. Upload (/batch)
@@ -68,3 +70,27 @@ sequenceDiagram
 Security Note: The API uses UUIDv4 identifiers to ensure non-correlation between results, enhancing data privacy.
 
 For detailed request/response schemas, refer to the OpenAPI specification.
+
+# Getting Started
+## API Key
+For an api key, reach out to API_Support@theclimateriskgroup.com
+
+For functional testing you will receive a key to relevant Quality Assurance (QA) APIs. 
+
+## About QA Apis
+QA APIs do not have performance or uptime SLAs, however QA APIs have the same or very similar surface area as our Production (PROD) APIs. 
+
+QA APIs are also used for XDI functional testing. 
+
+When functional testing is complete you will migrate to PROD API for performance testing. 
+
+## API documentation
+API documentation is at https://api.climaterisk.qa/index.html
+
+## Whitelisting
+Please have the following domain whitelisted for functional development against our QA APIs:
+- api.climaterisk.qa
+
+And when you move performance testing against our PROD APIs,: 
+- api.climaterisk.net 
+
