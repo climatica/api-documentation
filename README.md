@@ -87,7 +87,7 @@ For an api key, reach out to API_Support@theclimateriskgroup.com
 
 For functional testing you will receive a key to relevant Quality Assurance (QA) APIs. 
 
-## About QA Apis
+## About QA APIs
 QA APIs do not have performance or uptime SLAs, however QA APIs have the same or very similar surface area as our Production (PROD) APIs. 
 
 QA APIs are also used for XDI functional testing. 
@@ -103,4 +103,46 @@ Please have the following domain whitelisted for functional development against 
 
 And when you move performance testing against our PROD APIs,: 
 - api.climaterisk.net 
+
+# Structural Analysis APIs  
+
+## About 
+Simple Structural Residential APIs (SSR) and Simple Structural Commercial APIs (SSC) APIs. 
+SSR and SSC APIs follow the same format. 
+
+SRR is presented here as an example with links. 
+
+SSC APIs follows the same pattern as SSR APIs. See <em>API Flows</em>. 
+
+Comprehensive Structural (CS) Results does not follow the pattern of SSC and SSR. See <em>About Comprehensive Structural (CS) Results API</em>.
+
+## Single SSR - synchronous
+
+### v1/structural/simple/residential: 
+
+- https://api.climaterisk.qa/index.html#operation/apis_simple_residential
+
+## Batch SSR API endpoints - asynchronous
+
+### Batch variant of /v1/structural/simple/residential
+
+- https://api.climaterisk.qa/index.html#operation/batch_endpoints_simple_residential_batch
+
+### Progress for /v1/structural/simple/residential/batch
+- https://api.climaterisk.qa/index.html#operation/batch_endpoints_simple_residential_batch
+
+### Results for /v1/structural/simple/residential/batch
+
+- https://api.climaterisk.qa/index.html#operation/results_endpoints_simple_residential_results
+
+
+See https://api.climaterisk.qa/.
+
+## About Comprehensive Structural (CS) Results API
+CS is a results-only endpoint. 
+
+Using the CS Results API, you can retrieve additional information from assets made during a a SSC or SSR Batch variant request.
+
+### Results for /v1/structural/comprehensive/batch
+- https://api.climaterisk.qa/index.html#operation/results_endpoints_comprehensive_results
 
