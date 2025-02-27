@@ -114,26 +114,22 @@ sequenceDiagram
 
 	Note over C: 1. /batch
 
-    C->>+E: /v1/structural/simple/residential/batch
-    E->>-C: ...
+	Note right of C: /v1/structural/simple/residential/batch
+    C->>+E: [ { UUID, Payload } ]
+    E->>-C: { Successes, Errors }
 
 	Note over C: 2. /progress
 
     loop
-        C->>+E: /v1/structural/simple/residential/progress
-        E->>-C: ...
+		Note right of C: /v1/structural/simple/residential/progress
+        C->>+E: [ UUID ]
+        E->>-C: { Completion, <br> Successes, Errors }
     end
 
     Note over C: 3. /results
 
-	%% opt Comprehensive Results
-	C->>+E: /v1/structural/comprehensive/results
+	Note right of C: /v1/structural/comprehensive/results
+	C->>+E: [ UUID ]
 	E->>-C: [ { Comprehensive Results } ]
-	%% end
-
-	%% opt Simple Results
-	%% 	C->>+E: /v1/structural/simple/residential/results
-	%% 	E->>-C: [ { Simple Results } ]
-	%% end
 ```
 
