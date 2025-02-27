@@ -69,6 +69,10 @@ Security Note: The API uses UUIDv4 identifiers to ensure non-correlation between
 
 For detailed request/response schemas, refer to [the OpenAPI specification](https://api.climaterisk.net/).
 
+## Important note on Progress endpoint
+
+The `/progress` endpoint currently uses *presence in the database* (as either results or an error) to measure completion & does not have a view over the queue or analysis pipeline. Given this, the endpoint cannot know the difference between an `item_id` that is currently being processed and one that does not exist. Hence, you must ensure there are no ingestion errors reported by the `/batch` endpoints or your `/progress` requests will never complete.
+
 # Getting Started
 ## API Key
 For an api key, reach out to api_support@theclimateriskgroup.com
