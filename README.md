@@ -87,6 +87,12 @@ The QA Environment does not have a performance or uptime SLA, however is it almo
 - QA environment API documentation: [api.climaterisk.qa](https://api.climaterisk.qa/)
 - Production environment API documentation: [api.climaterisk.net](https://api.climaterisk.net/)
 
+## Examples
+[See the examples folder](/examples/) for Bash & Python batch API usage examples. Note that Google does not geocode the Japanese address. See the [notes on Geocoding](/GEOCODING.md)
+
+## Geocoding
+See the [notes on Geocoding](/GEOCODING.md)
+
 # Structural Analysis APIs
 
 Our structural analysis APIs come in two flavours: Simple & Comprehensive. The analysis pathways are the same, the difference is in the detail-level of the outputs.
