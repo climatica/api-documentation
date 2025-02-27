@@ -2,18 +2,18 @@
 
 XDI's APIs provide Physical Climate Risk analysis and offer two main interaction patterns:
 
-- Synchronous (Single Location): Immediate response for individual locations
-- Asynchronous (Batch): Process multiple locations in the background
+- Single Location: Immediate response for individual locations
+- Multi-Location (Batch): Process multiple locations in the background
 
 # Usage Comparison
 
-## Synchronous API
+## Single
 
 - Best for: Interactive applications, single location lookups
 - Advantage: Immediate response
 - Limitation: One location per request
 
-## Batch API
+## Batch
 
 - Best for: Large datasets, bulk processing
 - Advantage: Process many locations efficiently
@@ -21,25 +21,23 @@ XDI's APIs provide Physical Climate Risk analysis and offer two main interaction
 
 # API Flows
 
-## Synchronous (Single Location)
+## Single
 
 Client -> API: Send location details  
-API -> Client: Immediate response with severity data
+API -> Client: Immediate response with analysis results
 
-[//]: # "Consider generalising severity data to physical climate risk data"
+## Batch :
 
-## Batch (Multiple Locations) Three-step process:
-
-1. Upload (/batch)
-   Client -> API: Submit locations in JSON Lines format
+1. Upload (`/batch`)
+   Client -> API: Submit locations in JSON Lines format  
    API -> Client: Confirmation with success/error counts
 
-2. Progress (/progress)
-   Client -> API: Check status with location IDs
+2. Progress (`/progress`)
+   Client -> API: Check status with location IDs  
    API -> Client: Completion percentage, success/error counts
 
-3. Results (/results)
-   Client -> API: Request results with location IDs
+3. Results (`/results`)
+   Client -> API: Request results with location IDs  
    API -> Client: Complete results in JSON Lines format
 
 ```mermaid
@@ -55,8 +53,8 @@ sequenceDiagram
 
     E-->>-E: Calculate & persist results
 
-    opt loop until complete
-        Note over C: 2. /progress
+	Note over C: 2. /progress
+    opt streaming response
         C->>+E: [ UUID ]
         E->>-C: { Completion, <br> Successes, Errors }
     end
@@ -69,70 +67,73 @@ sequenceDiagram
 
 Security Note: The API uses UUIDv4 identifiers to ensure non-correlation between results, enhancing data privacy.
 
-For detailed request/response schemas, refer to the OpenAPI specification.
+For detailed request/response schemas, refer to [the OpenAPI specification](https://api.climaterisk.net/).
 
 # Getting Started
 ## API Key
-For an api key, reach out to API_Support@theclimateriskgroup.com
+For an api key, reach out to api_support@theclimateriskgroup.com
 
-For functional testing you will receive a key to relevant Quality Assurance (QA) APIs. 
+For integration you will receive a key to the relevant Quality Assurance (QA) environment APIs, using the `climaterisk.qa` domain. For ongoing access, you will need to switch over to the production environment, using the `climaterisk.net` domain.
 
-## About QA APIs
-QA APIs do not have performance or uptime SLAs, however QA APIs have the same or very similar surface area as our Production (PROD) APIs. 
-
-QA APIs are also used for XDI functional testing. 
-
-When functional testing is complete you will migrate to PROD API for performance testing. 
-
-## API documentation
-API documentation is at https://api.climaterisk.qa/index.html
-
-## Whitelisting
-Please have the following domain whitelisted for functional development against our QA APIs:
-- api.climaterisk.qa
-
-And when you move performance testing against our PROD APIs,: 
-- api.climaterisk.net 
-
-# Structural Analysis APIs  
-
-## About 
-Simple Structural Residential APIs (SSR) and Simple Structural Commercial APIs (SSC) APIs. 
-SSR and SSC APIs follow the same format. 
-
-SRR is presented here as an example with links. 
-
-SSC APIs follows the same pattern as SSR APIs. See <em>API Flows</em>. 
-
-Comprehensive Structural (CS) Results does not follow the pattern of SSC and SSR. See <em>About Comprehensive Structural (CS) Results API</em>.
-
-## Single SSR - synchronous
-
-### v1/structural/simple/residential: 
-
-- https://api.climaterisk.qa/index.html#operation/apis_simple_residential
-
-## Batch SSR API endpoints - asynchronous
-
-### Batch variant of /v1/structural/simple/residential
-
-- https://api.climaterisk.qa/index.html#operation/batch_endpoints_simple_residential_batch
-
-### Progress for /v1/structural/simple/residential/batch
-- https://api.climaterisk.qa/index.html#operation/batch_endpoints_simple_residential_batch
-
-### Results for /v1/structural/simple/residential/batch
-
-- https://api.climaterisk.qa/index.html#operation/results_endpoints_simple_residential_results
+## Environments
+The QA Environment does not have a performance or uptime SLA, however is it almost identical to our Production Environment.  Both environments are ISO27001 compliant, but the QA environment should only ever receive ***testing*** data.
 
 
-See https://api.climaterisk.qa/.
+## API Specification
+- QA environment API documentation: [api.climaterisk.qa](https://api.climaterisk.qa/)
+- Production environment API documentation: [api.climaterisk.net](https://api.climaterisk.net/)
 
-## About Comprehensive Structural (CS) Results API
-CS is a results-only endpoint. 
+# Structural Analysis APIs
 
-Using the CS Results API, you can retrieve additional information from assets made during a a SSC or SSR Batch variant request.
+Our structural analysis APIs come in two flavours: Simple & Comprehensive.  The analysis pathways are the same, the difference is in the detail-level of the outputs.
+- Simple outputs are MVAR-based risk ratings for 6 time steps under all RCP scenarios.
+- Comprehensive outputs provide damage (MVAR), Failure Probability (FP), and Productivity Loss (PL) metrics for the asset in total & broken down by hazard, for every 5 years under all RCP scenarios.
 
-### Results for /v1/structural/comprehensive/batch
-- https://api.climaterisk.qa/index.html#operation/results_endpoints_comprehensive_results
+NB: Comprehensive outputs are only available via the Batch API flow at this time.
+
+Additionally, to support clarity of use case, the structural APIs are split into residential and commercial variants, which enable different archetypes, but are otherwise the same shape/format.
+
+## Simple Structural
+
+- Simple Structural Residential (SSR) provides the **residential** archetypes.  For the current list of residential archetypes, consult [the archetype enum in the SSR Spec](https://api.climaterisk.qa/index.html#operation/apis_simple_residential)
+- Simple Structural Commercial (SSC) provides the **commercial** archetypes.  For the current list of commercial archetypes, consult [the archetype enum in the SSC Spec](https://api.climaterisk.qa/index.html#operation/apis_simple_commercial)
+
+The results endpoints for these APIs will return our Simple analysis outputs.
+
+## Comprehensive Structural
+
+For Comprehensive analysis metric outputs, the inputs need to be sent via either of the Simple Structural APIs.  Once processing has been completed, the results can be requested in either format.
+
+To confirm, this is the process to obtain to Comprehensive Structural results for a Residential archetype:
+```mermaid
+sequenceDiagram
+    title: Comprehensive Results Flow
+    autonumber
+    participant C as Client
+    participant E as Climate Risk Engines
+
+	Note over C: 1. /batch
+
+    C->>+E: /v1/structural/simple/residential/batch
+    E->>-C: ...
+
+	Note over C: 2. /progress
+
+    loop
+        C->>+E: /v1/structural/simple/residential/progress
+        E->>-C: ...
+    end
+
+    Note over C: 3. /results
+
+	%% opt Comprehensive Results
+	C->>+E: /v1/structural/comprehensive/results
+	E->>-C: [ { Comprehensive Results } ]
+	%% end
+
+	%% opt Simple Results
+	%% 	C->>+E: /v1/structural/simple/residential/results
+	%% 	E->>-C: [ { Simple Results } ]
+	%% end
+```
 
