@@ -34,7 +34,7 @@ API -> Client: Immediate response with analysis results
 
 2. Progress (`/progress`)  
 	Client -> API: Check status with location IDs  
-	API -> Client: Completion percentage, success/error counts
+	API -> Client: Completion, success/error counts
 
 3. Results (`/results`)  
 	Client -> API: Request results with location IDs  
