@@ -7,25 +7,25 @@ import sys
 import csv
 from urllib.parse import urlparse
 
+
 def make_request(method, path, data, token, host):
 	parsed = urlparse(host)
 	conn = http.client.HTTPSConnection(parsed.netloc)
-	headers = {
-		"Content-Type": "application/json",
-		"Authorization": f"Basic {token}"
-	}
+	headers = {"Content-Type": "application/json", "Authorization": f"Basic {token}"}
 	conn.request(method, f"/v1/structural/simple/residential/{path}", data, headers)
 	return conn.getresponse()
 
+
 def read_addresses(csv_path):
 	addresses = []
-	with open(csv_path, 'r') as f:
+	with open(csv_path, "r") as f:
 		reader = csv.DictReader(f)
-		if 'address' not in reader.fieldnames:
+		if "address" not in reader.fieldnames:
 			raise ValueError("CSV must contain an 'address' column")
 		for row in reader:
-			addresses.append(row['address'])
+			addresses.append(row["address"])
 	return addresses
+
 
 def main():
 	if len(sys.argv) < 2:
@@ -51,12 +51,12 @@ def main():
 
 	# Batch request
 	print("\n\n/batch response:")
-	batch_data = "\n".join([
-		json.dumps({
-			"item_id": id_,
-			"geocoding": {"address": addr}
-		}) for id_, addr in zip(ids, addresses)
-	])
+	batch_data = "\n".join(
+		[
+			json.dumps({"item_id": id_, "geocoding": {"address": addr}})
+			for id_, addr in zip(ids, addresses)
+		]
+	)
 
 	resp = make_request("POST", "batch", batch_data, token, host)
 	print(resp.read().decode())
@@ -68,7 +68,7 @@ def main():
 		chunk = resp.read(1)
 		if not chunk:
 			break
-		if chunk != b'\x1e':  # Skip record separator
+		if chunk != b"\x1e":  # Skip record separator
 			sys.stdout.buffer.write(chunk)
 			sys.stdout.buffer.flush()
 
@@ -78,8 +78,8 @@ def main():
 	results = []
 
 	# Read response and remove record separators
-	data = resp.read().decode('utf-8')
-	for line in data.split('\x1e'):
+	data = resp.read().decode("utf-8")
+	for line in data.split("\x1e"):
 		if line.strip():
 			results.append(line)
 
@@ -97,6 +97,7 @@ def main():
 			print(json.dumps(parsed, indent=2))
 	except json.JSONDecodeError:
 		print("Could not parse results as JSON")
+
 
 if __name__ == "__main__":
 	main()
