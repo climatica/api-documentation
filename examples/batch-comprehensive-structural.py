@@ -12,7 +12,7 @@ def make_request(method, path, data, token, host):
 	parsed = urlparse(host)
 	conn = http.client.HTTPSConnection(parsed.netloc)
 	headers = {"Content-Type": "application/json", "Authorization": f"Basic {token}"}
-	conn.request(method, f"/v1/structural/simple/residential/{path}", data, headers)
+	conn.request(method, f"/v1/structural/{path}", data, headers)
 	return conn.getresponse()
 
 
@@ -29,7 +29,7 @@ def read_addresses(csv_path):
 
 def main():
 	if len(sys.argv) < 2:
-		print("Usage: batch-simple-structural-residential.py <input.csv>")
+		print("Usage: batch-comprehensive-structural-residential.py <input.csv>")
 		sys.exit(1)
 
 	token = os.getenv("TOKEN")
@@ -58,12 +58,12 @@ def main():
 		]
 	)
 
-	resp = make_request("POST", "batch", batch_data, token, host)
+	resp = make_request("POST", "simple/residential/batch", batch_data, token, host)
 	print(resp.read().decode())
 
 	# Progress request
 	print("\n\n/progress response - note the streaming:")
-	resp = make_request("POST", "progress", ids_json, token, host)
+	resp = make_request("POST", "simple/residential/progress", ids_json, token, host)
 	while True:
 		chunk = resp.read(1)
 		if not chunk:
@@ -74,7 +74,7 @@ def main():
 
 	# Results retrieval
 	print("\n\n/results retrieval:")
-	resp = make_request("POST", "results", ids_json, token, host)
+	resp = make_request("POST", "comprehensive/results", ids_json, token, host)
 	results = []
 
 	# Read response and remove record separators
